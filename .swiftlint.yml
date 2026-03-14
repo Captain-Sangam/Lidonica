@@ -1,0 +1,10 @@
+included:
+  - Sources
+excluded:
+  - .build
+
+disabled_rules:
+  - trailing_comma
+  - todo
+
+line_length: 140
