@@ -50,19 +50,53 @@ enum TrackLibrary {
             scale: [55, 57, 59, 60, 62, 64, 67]
         ),
         Track(
-            id: "au-clair",
-            name: "Au Clair de la Lune",
-            description: "Dreamy French moonlight serenade",
-            genre: .folk,
-            difficulty: .easy,
+            id: "my-heart-will-go-on",
+            name: "My Heart Will Go On",
+            description: "Titanic's sweeping love theme",
+            genre: .classical,
+            difficulty: .medium,
             tempo: .slow,
+            waveform: .sine,
+            reverbMix: 0.50,
+            // Key of E — opening verse melody
+            notes: [64, 66, 64, 66, 64, 71, 69,
+                    66, 64, 66, 64, 62, 64,
+                    64, 66, 64, 66, 64, 71, 69,
+                    66, 64, 66, 71, 73, 71,
+                    69, 66, 69, 71, 73, 71, 69, 66, 64],
+            scale: [59, 61, 62, 64, 66, 68, 69, 71, 73, 74]
+        ),
+        Track(
+            id: "fur-elise",
+            name: "Für Elise",
+            description: "Beethoven's beloved piano piece",
+            genre: .classical,
+            difficulty: .medium,
+            tempo: .moderate,
             waveform: .triangle,
-            reverbMix: 0.30,
-            notes: [60, 60, 60, 62, 64, 62,
-                    60, 64, 62, 62, 60,
-                    60, 60, 60, 62, 64, 62,
-                    60, 64, 62, 62, 60],
-            scale: [60, 62, 64, 65, 67, 69, 71, 72]
+            reverbMix: 0.35,
+            notes: [76, 75, 76, 75, 76, 71, 74, 72, 69,
+                    60, 64, 69, 71,
+                    64, 68, 71, 72,
+                    64, 76, 75, 76, 75, 76, 71, 74, 72, 69,
+                    60, 64, 69, 71,
+                    64, 72, 71, 69],
+            scale: [60, 62, 64, 65, 67, 68, 69, 71, 72, 74, 75, 76]
+        ),
+        Track(
+            id: "canon-in-d",
+            name: "Canon in D",
+            description: "Pachelbel's elegant progression",
+            genre: .classical,
+            difficulty: .medium,
+            tempo: .moderate,
+            waveform: .triangle,
+            reverbMix: 0.45,
+            notes: [78, 76, 74, 73, 71, 69, 71, 73,
+                    74, 73, 71, 69, 67, 66, 67, 69,
+                    71, 69, 67, 66, 64, 62, 64, 66,
+                    67, 66, 64, 62, 61, 62, 64, 66],
+            scale: [62, 64, 66, 67, 69, 71, 73, 74, 76, 78]
         ),
         Track(
             id: "greensleeves",
@@ -111,6 +145,21 @@ enum TrackLibrary {
             scale: [57, 60, 62, 64, 65, 67, 69, 71, 72, 74]
         ),
         Track(
+            id: "la-vie-en-rose",
+            name: "La Vie en Rose",
+            description: "Edith Piaf's romantic waltz",
+            genre: .jazz,
+            difficulty: .medium,
+            tempo: .moderate,
+            waveform: .softSaw,
+            reverbMix: 0.35,
+            notes: [67, 69, 72, 71, 69, 67, 72, 71,
+                    69, 67, 65, 67, 69, 67,
+                    67, 69, 72, 71, 69, 67, 74, 72,
+                    71, 69, 67, 65, 64, 67],
+            scale: [60, 62, 64, 65, 67, 69, 71, 72, 74]
+        ),
+        Track(
             id: "blues-walk",
             name: "Simple Blues Walk",
             description: "Laid-back 12-bar groove",
@@ -153,6 +202,21 @@ enum TrackLibrary {
                     58, 59, 60, 63, 65, 63, 60, 58,
                     67, 65, 63, 60, 58, 56],
             scale: [56, 58, 59, 60, 63, 65, 67, 68, 70]
+        ),
+        Track(
+            id: "au-clair",
+            name: "Au Clair de la Lune",
+            description: "Dreamy French moonlight serenade",
+            genre: .folk,
+            difficulty: .easy,
+            tempo: .slow,
+            waveform: .triangle,
+            reverbMix: 0.30,
+            notes: [60, 60, 60, 62, 64, 62,
+                    60, 64, 62, 62, 60,
+                    60, 60, 60, 62, 64, 62,
+                    60, 64, 62, 62, 60],
+            scale: [60, 62, 64, 65, 67, 69, 71, 72]
         ),
     ]
 }

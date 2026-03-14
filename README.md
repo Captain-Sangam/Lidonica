@@ -8,11 +8,10 @@ Open the app, pick a melody, and move your MacBook screen up and down. The app r
 
 ## Features
 
-- **10 built-in tracks** spanning folk, blues, classical, ambient, and jazz
+- **14 built-in tracks** spanning folk, blues, classical, ambient, and jazz
+- **2 play modes** — Guided (melody advances with any movement) and Free Play (full scale)
 - **Real lid angle sensor** support for MacBooks (2019+)
 - **Fallback slider mode** for unsupported devices or desktop Macs
-- **Guided mode** with forgiving note snapping to the melody
-- **Free play mode** mapping the full scale across the lid range
 - **Real-time synthesis** — sine, triangle, and soft saw waveforms with reverb
 - **Light and dark themes** following system preference or manual override
 - **Calibration** to set your comfortable play range
@@ -41,20 +40,36 @@ xcodegen generate
 open Lidonica.xcodeproj
 ```
 
+## Usage
+
+1. **Launch** — `swift run Lidonica` or open the built app
+2. **Pick a track** — click one from the grid
+3. **Calibrate** — click Calibrate, hold your lid at a comfortable angle, then click Set Center Position
+4. **Play** — hit the play button (or press Space) and tilt your lid up and down gently
+5. **Switch modes** — open Settings (gear icon) to toggle between Guided and Free Play
+
+**Guided mode** advances through the melody with any lid movement — direction doesn't matter, it always plays forward. **Free Play** maps the full scale directly to the lid range.
+
+On Macs without a lid sensor (desktops, older laptops), an on-screen slider appears automatically as a fallback.
+
 ## Tracks
 
-| Track | Genre | Difficulty |
-|---|---|---|
-| Twinkle Twinkle | Folk | Easy |
-| Ode to Joy | Classical | Easy |
-| Amazing Grace | Folk | Easy |
-| Au Clair de la Lune | Folk | Easy |
-| Greensleeves | Folk | Medium |
-| Scarborough Fair | Folk | Medium |
-| Danny Boy | Folk | Medium |
-| Simple Blues Walk | Blues | Medium |
-| Ambient Drift | Ambient | Easy |
-| Blue Monk | Jazz | Hard |
+| Track               | Genre     | Difficulty |
+| ------------------- | --------- | ---------- |
+| Twinkle Twinkle     | Folk      | Easy       |
+| Ode to Joy          | Classical | Easy       |
+| Amazing Grace       | Folk      | Easy       |
+| My Heart Will Go On | Classical | Medium     |
+| Für Elise           | Classical | Medium     |
+| Canon in D          | Classical | Medium     |
+| Greensleeves        | Folk      | Medium     |
+| Scarborough Fair    | Folk      | Medium     |
+| Danny Boy           | Folk      | Medium     |
+| La Vie en Rose      | Jazz      | Medium     |
+| Simple Blues Walk   | Blues     | Medium     |
+| Ambient Drift       | Ambient   | Easy       |
+| Blue Monk           | Jazz      | Hard       |
+| Au Clair de la Lune | Folk      | Easy       |
 
 ## Architecture
 
@@ -66,7 +81,7 @@ Sources/
   Sensor/        → Lid angle protocol, HID sensor, slider fallback
   Views/         → SwiftUI views (shadcn-inspired design system)
   Theme/         → Design tokens (colors, typography, spacing)
-  Data/          → Built-in track library (10 public domain melodies)
+  Data/          → Built-in track library (14 public domain melodies)
 ```
 
 ## Lid Angle Sensor

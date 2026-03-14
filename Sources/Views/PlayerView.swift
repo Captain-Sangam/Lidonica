@@ -52,10 +52,7 @@ struct PlayerView: View {
                             .foregroundStyle(LidonicaTheme.textSecondary)
                     }
                     Spacer()
-                    HStack(spacing: LidonicaTheme.spacingXS) {
-                        genreBadge(track.genre)
-                        difficultyBadge(track.difficulty)
-                    }
+                    genreBadge(track.genre)
                 }
             } else {
                 Text("Select a track below to get started")
@@ -72,15 +69,6 @@ struct PlayerView: View {
             .padding(.horizontal, 8)
             .padding(.vertical, 3)
             .background(LidonicaTheme.accentIndigo.opacity(0.12), in: Capsule())
-    }
-
-    private func difficultyBadge(_ difficulty: Difficulty) -> some View {
-        Text(difficulty.rawValue)
-            .font(LidonicaTheme.captionFont)
-            .foregroundStyle(LidonicaTheme.textSecondary)
-            .padding(.horizontal, 8)
-            .padding(.vertical, 3)
-            .background(LidonicaTheme.backgroundSecondary, in: Capsule())
     }
 
     // MARK: - Note Display

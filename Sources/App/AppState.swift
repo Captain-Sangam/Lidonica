@@ -31,8 +31,8 @@ final class AppState: ObservableObject {
             audioEngine.setVolume(Float(masterVolume))
         }
     }
-    @Published var isGuidedMode: Bool {
-        didSet { UserDefaults.standard.set(isGuidedMode, forKey: "isGuidedMode") }
+    @Published var playMode: PlayMode {
+        didSet { UserDefaults.standard.set(playMode.rawValue, forKey: "playMode") }
     }
     @Published var calibrationCenter: Double {
         didSet { UserDefaults.standard.set(calibrationCenter, forKey: "calibrationCenter") }
@@ -49,6 +49,11 @@ final class AppState: ObservableObject {
     private let noteMapper = NoteMapper()
     private var cancellables = Set<AnyCancellable>()
 
+    // Guided mode — accumulates movement to advance through melody
+    private var guidedIndex: Int = 0
+    private var guidedMovementAccum: Double = 0
+    private let guidedStepThreshold: Double = 2.5
+
     var calibrationMin: Double { calibrationCenter - calibrationRange }
     var calibrationMax: Double { calibrationCenter + calibrationRange }
 
@@ -56,7 +61,7 @@ final class AppState: ObservableObject {
         let defaults = UserDefaults.standard
         self.themePreference = ThemePreference(rawValue: defaults.string(forKey: "themePreference") ?? "") ?? .system
         self.masterVolume = defaults.object(forKey: "masterVolume") as? Double ?? 0.7
-        self.isGuidedMode = defaults.object(forKey: "isGuidedMode") as? Bool ?? true
+        self.playMode = PlayMode(rawValue: defaults.string(forKey: "playMode") ?? "") ?? .guided
         self.calibrationCenter = defaults.object(forKey: "calibrationCenter") as? Double ?? 105
         self.calibrationRange = defaults.object(forKey: "calibrationRange") as? Double ?? 35
         self.hasCalibrated = defaults.bool(forKey: "hasCalibrated")
@@ -88,29 +93,54 @@ final class AppState: ObservableObject {
     }
 
     private func handleAngleUpdate(_ rawAngle: Double) {
+        let oldAngle = currentAngle
         currentAngle = rawAngle
+        let delta = abs(rawAngle - oldAngle)
 
         guard sessionState == .playing,
               let track = selectedTrack else { return }
 
-        let normalizedAngle = (rawAngle - calibrationMin) / (calibrationMax - calibrationMin)
-        let clampedAngle = max(0, min(1, normalizedAngle))
+        switch playMode {
+        case .guided:
+            guard !track.notes.isEmpty else { return }
+            guidedMovementAccum += delta
+            if guidedMovementAccum >= guidedStepThreshold {
+                let steps = Int(guidedMovementAccum / guidedStepThreshold)
+                guidedMovementAccum = guidedMovementAccum.truncatingRemainder(dividingBy: guidedStepThreshold)
+                guidedIndex = (guidedIndex + steps) % track.notes.count
 
-        let mappedNote = noteMapper.mapAngleToNote(
-            normalizedAngle: clampedAngle,
-            track: track,
-            guided: isGuidedMode
-        )
+                let note = track.notes[guidedIndex]
+                if note != currentNote {
+                    currentNote = note
+                    currentNoteName = Note.name(for: note)
+                    audioEngine.playNote(
+                        midiNote: note,
+                        waveform: track.waveform,
+                        reverbMix: track.reverbMix
+                    )
+                }
+            }
 
-        if mappedNote != currentNote {
-            currentNote = mappedNote
-            if let note = mappedNote {
-                currentNoteName = Note.name(for: note)
-                audioEngine.playNote(
-                    midiNote: note,
-                    waveform: track.waveform,
-                    reverbMix: track.reverbMix
-                )
+        case .freePlay:
+            let normalizedAngle = (rawAngle - calibrationMin) / (calibrationMax - calibrationMin)
+            let clampedAngle = max(0, min(1, normalizedAngle))
+
+            let mappedNote = noteMapper.mapAngleToNote(
+                normalizedAngle: clampedAngle,
+                track: track,
+                mode: playMode
+            )
+
+            if mappedNote != currentNote {
+                currentNote = mappedNote
+                if let note = mappedNote {
+                    currentNoteName = Note.name(for: note)
+                    audioEngine.playNote(
+                        midiNote: note,
+                        waveform: track.waveform,
+                        reverbMix: track.reverbMix
+                    )
+                }
             }
         }
     }
@@ -148,6 +178,8 @@ final class AppState: ObservableObject {
 
     func stop() {
         sessionState = hasCalibrated ? .calibrated : .ready
+        guidedIndex = 0
+        guidedMovementAccum = 0
         audioEngine.stopNote()
         audioEngine.stop()
         currentNote = nil
@@ -159,6 +191,8 @@ final class AppState: ObservableObject {
         if wasPlaying {
             audioEngine.stopNote()
         }
+        guidedIndex = 0
+        guidedMovementAccum = 0
         selectedTrack = track
         currentNote = nil
         currentNoteName = ""

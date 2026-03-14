@@ -5,6 +5,7 @@ struct ContentView: View {
     @Environment(\.colorScheme) var colorScheme
     @State private var showSettings = false
     @State private var showCalibration = false
+    @State private var showHowToPlay = false
 
     var body: some View {
         ZStack {
@@ -14,16 +15,17 @@ struct ContentView: View {
                 topBar
                     .padding(.horizontal, LidonicaTheme.spacingLG)
                     .padding(.top, LidonicaTheme.spacingMD)
+                    .padding(.bottom, LidonicaTheme.spacingSM)
 
-                Spacer(minLength: LidonicaTheme.spacingMD)
+                ScrollView(.vertical, showsIndicators: false) {
+                    VStack(spacing: LidonicaTheme.spacingMD) {
+                        centerPanel
+                            .padding(.horizontal, LidonicaTheme.spacingLG)
 
-                centerPanel
-                    .padding(.horizontal, LidonicaTheme.spacingLG)
-
-                Spacer(minLength: LidonicaTheme.spacingMD)
-
-                bottomSection
+                        bottomSection
+                    }
                     .padding(.bottom, LidonicaTheme.spacingMD)
+                }
             }
         }
         .preferredColorScheme(colorSchemeOverride)
@@ -34,6 +36,9 @@ struct ContentView: View {
         .sheet(isPresented: $showCalibration) {
             CalibrationView()
                 .environmentObject(appState)
+        }
+        .sheet(isPresented: $showHowToPlay) {
+            HowToPlayView()
         }
         .onReceive(NotificationCenter.default.publisher(for: NSWorkspace.willSleepNotification)) { _ in
             appState.handleSleep()
@@ -62,6 +67,7 @@ struct ContentView: View {
             Spacer()
 
             HStack(spacing: LidonicaTheme.spacingSM) {
+                howToPlayButton
                 themeToggle
                 settingsButton
             }
@@ -94,6 +100,20 @@ struct ContentView: View {
         case .light: return "sun.max"
         case .dark: return "moon"
         }
+    }
+
+    private var howToPlayButton: some View {
+        Button {
+            showHowToPlay = true
+        } label: {
+            Image(systemName: "questionmark")
+                .font(.system(size: 15, weight: .medium))
+                .foregroundStyle(LidonicaTheme.textSecondary)
+                .frame(width: 32, height: 32)
+                .background(LidonicaTheme.cardBackground, in: RoundedRectangle(cornerRadius: LidonicaTheme.radiusMD))
+        }
+        .buttonStyle(.plain)
+        .help("How to play")
     }
 
     private var settingsButton: some View {

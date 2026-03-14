@@ -51,17 +51,14 @@ struct SettingsView: View {
 
             settingsSection("Play Mode") {
                 VStack(alignment: .leading, spacing: LidonicaTheme.spacingSM) {
-                    Picker("Mode", selection: Binding(
-                        get: { appState.isGuidedMode ? PlayMode.guided : PlayMode.freePlay },
-                        set: { appState.isGuidedMode = $0 == .guided }
-                    )) {
+                    Picker("Mode", selection: $appState.playMode) {
                         ForEach(PlayMode.allCases, id: \.self) { mode in
                             Text(mode.rawValue).tag(mode)
                         }
                     }
                     .pickerStyle(.segmented)
 
-                    Text(appState.isGuidedMode ? PlayMode.guided.description : PlayMode.freePlay.description)
+                    Text(appState.playMode.description)
                         .font(LidonicaTheme.captionFont)
                         .foregroundStyle(LidonicaTheme.textTertiary)
                 }
@@ -108,7 +105,7 @@ struct SettingsView: View {
             }
         }
         .padding(LidonicaTheme.spacingLG)
-        .frame(width: 340, height: 480)
+        .frame(width: 340, height: 500)
     }
 
     private func settingsSection<Content: View>(_ title: String, @ViewBuilder content: () -> Content) -> some View {

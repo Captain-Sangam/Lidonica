@@ -28,7 +28,7 @@ struct TrackCardView: View {
                     .foregroundStyle(LidonicaTheme.textTertiary)
             }
             .padding(LidonicaTheme.spacingSM + 2)
-            .frame(width: 130)
+            .frame(maxWidth: .infinity, alignment: .leading)
             .background(
                 isSelected ? LidonicaTheme.cardBackgroundSelected : LidonicaTheme.cardBackground,
                 in: RoundedRectangle(cornerRadius: LidonicaTheme.radiusLG)

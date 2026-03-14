@@ -9,11 +9,11 @@ final class AudioEngine {
     private var isRunning = false
     private var currentMidiNote: Int?
 
-    private let format: AVAudioFormat
+    private let stereoFormat: AVAudioFormat
 
     init() {
         let sampleRate = 44100.0
-        format = AVAudioFormat(standardFormatWithSampleRate: sampleRate, channels: 1)!
+        stereoFormat = AVAudioFormat(standardFormatWithSampleRate: sampleRate, channels: 2)!
         toneGenerator = ToneGenerator(sampleRate: sampleRate)
         setupAudioGraph()
     }
@@ -21,12 +21,20 @@ final class AudioEngine {
     private func setupAudioGraph() {
         guard let toneGenerator = toneGenerator else { return }
 
-        let srcNode = AVAudioSourceNode(format: format) { _, _, frameCount, bufferList -> OSStatus in
+        let srcNode = AVAudioSourceNode(format: stereoFormat) { _, _, frameCount, bufferList -> OSStatus in
             let ablPointer = UnsafeMutableAudioBufferListPointer(bufferList)
-            guard let buffer = ablPointer.first?.mData?.assumingMemoryBound(to: Float.self) else {
-                return noErr
+            let count = Int(frameCount)
+
+            // Render mono into a temp buffer, then copy to both channels
+            var mono = [Float](repeating: 0, count: count)
+            toneGenerator.render(buffer: &mono, frameCount: count)
+
+            for buf in ablPointer {
+                guard let dest = buf.mData?.assumingMemoryBound(to: Float.self) else { continue }
+                for i in 0..<count {
+                    dest[i] = mono[i]
+                }
             }
-            toneGenerator.render(buffer: buffer, frameCount: Int(frameCount))
             return noErr
         }
 
@@ -38,8 +46,8 @@ final class AudioEngine {
         reverb.loadFactoryPreset(.smallRoom)
         reverb.wetDryMix = 25
 
-        engine.connect(srcNode, to: reverb, format: format)
-        engine.connect(reverb, to: engine.mainMixerNode, format: format)
+        engine.connect(srcNode, to: reverb, format: stereoFormat)
+        engine.connect(reverb, to: engine.mainMixerNode, format: stereoFormat)
 
         engine.mainMixerNode.outputVolume = 0.7
     }

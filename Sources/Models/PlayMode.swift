@@ -7,7 +7,7 @@ enum PlayMode: String, CaseIterable {
     var description: String {
         switch self {
         case .guided:
-            return "Notes snap to the melody. Forgiving and musical."
+            return "Melody advances forward with any lid movement."
         case .freePlay:
             return "Direct angle-to-note mapping across the full scale."
         }
