@@ -73,6 +73,12 @@ Sources/
 
 The app uses the undocumented IOKit HID interface to read the MacBook lid angle sensor (VendorID `0x05AC`, UsagePage `0x0020`, Usage `0x008A`). This requires App Sandbox to be disabled and is not App Store compatible. If the sensor is unavailable, the app automatically falls back to an on-screen slider.
 
+## Contributing
+
+Contributions welcome! See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
+
 ## License
+
+MIT License. See [LICENSE](LICENSE) for details.
 
 All included melodies are public domain.
